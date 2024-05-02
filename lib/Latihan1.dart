@@ -41,7 +41,7 @@ void main() {
   print("Nama: ${transkrip['mahasiswa']['nama']}");
   print("NPM: ${transkrip['mahasiswa']['npm']}");
   print("Semester: ${transkrip['mahasiswa']['semester']}");
-  print("IPK: ${ipk.toStringAsFixed(2)}");
+  print("IPK: ${ipk.toStringAsFixed(2)}"); // membulatkan 2 angka di belakang koma
 }
 
 // sebagai fungsi untuk mendapatkan nilai angka dari nilai huruf
