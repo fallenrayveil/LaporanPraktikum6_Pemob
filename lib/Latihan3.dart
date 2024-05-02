@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart'; 
 
 void main() {
   runApp(MyApp());
 }
 
 class Universitas {
-  String nama;
-  String website;
+  String nama; // atribut
+  String website; // atribut
 
-  Universitas({required this.nama, required this.website});
+  Universitas({required this.nama, required this.website}); // constructor
 }
 
 class DaftarUniversitas {
   List<Universitas> universitas = [];
 
-  DaftarUniversitas.fromJson(List<dynamic> json) {
-    universitas = json.map((uni) {
+  // mengambil data dari json
+  DaftarUniversitas.fromJson(List<dynamic> json) { 
+    universitas = json.map((uni) { 
       return Universitas(
-        nama: uni['name'],
-        website: uni['web_pages'][0], // Mengambil situs web pertama dari daftar
+        nama: uni['name'], // mengambil nama universitas
+        website: uni['web_pages'][0], // mengambil situs web pertama dari daftar
       );
     }).toList();
   }
@@ -35,16 +36,19 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  late Future<DaftarUniversitas> futureUniversitas;
+  late Future<DaftarUniversitas> futureUniversitas; // menampung hasil
 
+  // api yang sesuai dengan modul
   String url = "http://universities.hipolabs.com/search?country=Indonesia";
 
-  Future<DaftarUniversitas> fetchData() async {
-    final response = await http.get(Uri.parse(url));
+  Future<DaftarUniversitas> fetchData() async { // fetch data
+    final response = await http.get(Uri.parse(url)); // mengambil data dari url
 
     if (response.statusCode == 200) {
+      // jika server mengembalikan 200 OK (berhasil), parse json
       return DaftarUniversitas.fromJson(jsonDecode(response.body));
     } else {
+      // jika gagal (bukan  200 OK), lempar exception
       throw Exception('Gagal load');
     }
   }
@@ -52,7 +56,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    futureUniversitas = fetchData();
+    futureUniversitas = fetchData(); // fetch data
   }
 
   @override
@@ -69,14 +73,14 @@ class MyAppState extends State<MyApp> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
-                  itemCount: snapshot.data!.universitas.length,
+                  itemCount: snapshot.data!.universitas.length, // berisikan jumlah data
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () async {
-                        if (await canLaunch(snapshot.data!.universitas[index].website)) {
-                          await launch(snapshot.data!.universitas[index].website);
+                        if (await canLaunch(snapshot.data!.universitas[index].website)) { // mengecek apakah bisa membuka situs web
+                          await launch(snapshot.data!.universitas[index].website); // membuka situs web
                         } else {
-                          throw 'Tidak bisa membuka ${snapshot.data!.universitas[index].website}';
+                          throw 'Tidak bisa membuka ${snapshot.data!.universitas[index].website}'; // jika tidak bisa membuka situs web
                         }
                       },
                       child: Container(
@@ -98,7 +102,7 @@ class MyAppState extends State<MyApp> {
                             ),
                             SizedBox(height: 5.0),
                             Text(
-                              snapshot.data!.universitas[index].website,
+                              snapshot.data!.universitas[index].website, // menampilkan situs web
                               style: TextStyle(
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline,
@@ -113,6 +117,7 @@ class MyAppState extends State<MyApp> {
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
+              // menampilkan loading spinner by default
               return CircularProgressIndicator();
             },
           ),
